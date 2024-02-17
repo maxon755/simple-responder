@@ -34,6 +34,7 @@ func main() {
 
 		c.String(*responseStatus, *responseBody)
 	})
+	fmt.Println("Time to make a request!")
 	r.Run(fmt.Sprintf("0.0.0.0:%d", *port))
 }
 

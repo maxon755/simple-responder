@@ -8,5 +8,15 @@ RUN go mod download && go mod verify
 
 COPY . .
 
-RUN go build -o simple-responder
-CMD [". /simple-responder"]
+RUN go build -ldflags "-s -w" -o simple-responder
+
+# -----------------------------------------------------------------------------
+FROM alpine as runtime
+
+ENV GIN_MODE=release
+
+RUN mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
+
+COPY --from=builder /build/simple-responder /usr/local/sbin/simple-responder
+
+CMD ["simple-responder"]
