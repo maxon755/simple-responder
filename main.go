@@ -12,7 +12,7 @@ import (
 func main() {
 	port := flag.Int("port", 8080, "The port to start an application")
 	responseStatus := flag.Int("status", 200, "The status to respond with")
-	responseBody := flag.String("body", "OK", "The body to resnsond with")
+	responseBody := flag.String("body", "OK", "The body to respond with")
 	contentFilePath := flag.String("body-file", "", "The path to file with response content")
 	responseDelay := flag.Int("delay", 0, "The delay before response. Usefull for timeout emulation")
 
