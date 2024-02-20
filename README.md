@@ -9,20 +9,27 @@ The simplest way just to run docker container
 docker run --rm -p 8080:8080 maxon755/simple-responder -h
 ```
 
-## Usage
+## Flags
+`--status`: `int`  
+The http status code to respond with. Default `200`.  
 ```
-  -status int
-    	The status to respond with (default 200)
-  -body string
-    	The body to resnsond with (default "OK")
-  -body-file string
-    	The path to file with response content
-  -delay int
-    	The delay before response. Usefull for timeout emulation
+simple-responder --status 302
 ```
 
-The response content can be specified either with `-body` parameter 
-as a string or via file with `-body-file` parameter.
+`--body`: `string`  
+The response body. Default `OK`.
+```
+simple-responder --body "Internal server error"
+```
+
+`--body-file`: `string`  
+The path to file with response body. Usefull when body content is too big and could not be specifed as single sting.
+```
+simple-responder --body-file /tmp/content.txt
+```
+
+`--delay`: `int`
+The delay before response in seconds. Usefull for timeout emulation.
 
 ### Example
 ```bash
@@ -36,10 +43,10 @@ docker run --rm \
 ```
 > Note. The content file must be inside the container. Can be passed via volumes.
 
-This app will response for any URI with with status `201` and content specifeid in `/tmp/content.txt` with delay of `3 seconds`.
+The app will response for any URI with with status `201` and content specifeid in `/tmp/content.txt` with delay of `3 seconds`.
 
 ```
-curl -i localhost:8080
+curl -i localhost:8080/any-uri
 
 HTTP/1.1 201 Created
 Content-Type: text/plain; charset=utf-8
