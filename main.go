@@ -29,7 +29,7 @@ func main() {
 	}
 
 	r := gin.Default()
-	r.GET("/*proxyPath", func(c *gin.Context) {
+	r.Any("/*proxyPath", func(c *gin.Context) {
 		time.Sleep(time.Duration(*responseDelay) * time.Second)
 
 		c.String(*responseStatus, *responseBody)
