@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"time"
 
@@ -28,14 +29,15 @@ func main() {
 		*responseBody = responseContentFromFile
 	}
 
-	r := gin.Default()
-	r.Any("/*proxyPath", func(c *gin.Context) {
+	server := gin.New()
+	server.Use(RequestBodyLogger(), gin.Logger())
+	server.Any("/*proxyPath", func(c *gin.Context) {
 		time.Sleep(time.Duration(*responseDelay) * time.Second)
 
 		c.String(*responseStatus, *responseBody)
 	})
 	fmt.Println("Time to make a request!")
-	r.Run(fmt.Sprintf("0.0.0.0:%d", *port))
+	server.Run(fmt.Sprintf("0.0.0.0:%d", *port))
 }
 
 func readFileContent(filePath string) (string, error) {
@@ -45,4 +47,25 @@ func readFileContent(filePath string) (string, error) {
 	}
 
 	return string(content), nil
+}
+
+func RequestBodyLogger() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Next()
+
+		requestBody, err := io.ReadAll(c.Request.Body)
+		if err != nil {
+			panic(err)
+		}
+
+		if len(requestBody) == 0 {
+			return
+		}
+
+		fmt.Fprintf(
+			gin.DefaultWriter,
+			"Request body:\n%s\n",
+			string(requestBody),
+		)
+	}
 }
